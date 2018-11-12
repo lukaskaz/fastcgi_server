@@ -1,2 +1,2 @@
 # fastcgi_server
-Web Server implementataion based on FastCGI interface
+Web Server implementation based on FastCGI interface
