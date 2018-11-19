@@ -36,6 +36,7 @@ SRC+=connection.cpp
 SRC+=responder.cpp
 SRC+=request.cpp
 SRC+=support.cpp
+SRC+=interface.cpp
 SRC+=logging.cpp
 
 #prepare objects

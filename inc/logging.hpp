@@ -5,14 +5,13 @@
 
 #define DEBUG_MODE  0
 
-class Log
-{
+class Log {
 public:
+    enum log_t{ LOG_SIMPLE = 0, LOG_ERROR, LOG_INFO, LOG_DEBUG };
+
     Log(): Log(true, false, false, false) {};
     Log(bool simple, bool error, bool info, bool debug): SHOW_SIMPLE_LOGS(simple),
         SHOW_ERROR_LOGS(error), SHOW_INFO_LOGS(info), SHOW_DEBUG_LOGS(debug) {};
-
-    enum log_t{ LOG_SIMPLE = 0, LOG_ERROR, LOG_INFO, LOG_DEBUG };
 
     void log(const std::string &txt) const { log_simple("", txt); };
     void log(log_t type, const std::string &, const std::string &);

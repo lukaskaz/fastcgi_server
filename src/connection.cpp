@@ -50,7 +50,7 @@ int8_t connection::readSocket(std::vector<uint8_t> &buffer, uint32_t bytes_to_re
 
 int8_t connection::writeSocket(std::vector<uint8_t> &buffer, uint32_t bytes_to_write)
 {
-    std::vector<uint8_t>::const_iterator it = buffer.begin();
+    std::vector<uint8_t>::const_iterator it = buffer.cbegin();
     int32_t written = 0;
 
     while(bytes_to_write) {

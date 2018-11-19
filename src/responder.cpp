@@ -15,12 +15,12 @@ responder::responder():
     release();
 }
 
-void responder::writeHeader(std::string &header)
+void responder::writeHeader(const std::string &header)
 {
     body_header.insert(body_header.end(), header.begin(), header.end());
 }
 
-void responder::writeBody(std::string& body)
+void responder::writeBody(const std::string& body)
 {
     body_content.insert(body_content.end(), body.begin(), body.end());
 }
@@ -29,7 +29,7 @@ int8_t responder::insertParams(std::vector<uint8_t> &input)
 {
     if(input.size() > 0) {
         params.insert(params.end(), input.begin(), input.end());
-        buildParamsMap();
+        //buildParamsMap();
         return 0;
     }
     else {
@@ -43,7 +43,7 @@ int8_t responder::insertStream(std::vector<uint8_t> &input)
 {
     if(input.size() > 0) {
         stream.insert(stream.end(), input.begin(), input.end());
-        buildStreamMap();
+        //buildStreamMap();
         return 0;
     }
     else {
@@ -61,38 +61,6 @@ int8_t responder::insertData(std::vector<uint8_t> &input)
     }
     else {
         data_ready = true;
-    }
-
-    return (-1);
-}
-
-int8_t responder::buildParamsMap(void)
-{
-    if(params.size() > 0) {
-        input_data input(params);
-
-        params_map.clear();
-        while(input.findNextElem(input_data::TYPE_PARAM) == 0) {
-            params_map.insert(input.getPair());
-        }
-
-        return 0;
-    }
-
-    return (-1);
-}
-
-int8_t responder::buildStreamMap(void)
-{
-    if(stream.size() > 0) {
-        input_data input(stream);
-
-        stream_map.clear();
-        while(input.findNextElem(input_data::TYPE_STREAM) == 0) {
-            stream_map.insert(input.getPair());
-        }
-
-        return 0;
     }
 
     return (-1);
@@ -165,19 +133,19 @@ size_t responder::getHeaderBeginStdout(std::vector<uint8_t>::const_iterator &it)
     header.type.std.reserved    = 0x00;
     header.syncToRaw();
 
-    it = header.raw_vect.begin();
+    it = header.raw_vect.cbegin();
     return header.stdSize();
 }
 
 size_t responder::getStdoutBodyHeader(std::vector<uint8_t>::const_iterator &it)
 {
-    it = body_header.begin();
+    it = body_header.cbegin();
     return body_header.size();
 }
 
 size_t responder::getStdoutBodyContent(std::vector<uint8_t>::const_iterator &it)
 {
-    it = body_content.begin();
+    it = body_content.cbegin();
     return body_content.size();
 }
 
@@ -196,7 +164,7 @@ size_t responder::getHeaderStdoutEOF(std::vector<uint8_t>::const_iterator &it)
     header.type.std.reserved    = 0x00;
     header.syncToRaw();
 
-    it = header.raw_vect.begin();
+    it = header.raw_vect.cbegin();
     return header.stdSize();
 }
 
@@ -215,7 +183,7 @@ size_t responder::getHeaderEndRequest(std::vector<uint8_t>::const_iterator &it)
     header.type.std.reserved    = 0x00;
     header.syncToRaw();
 
-    it = header.raw_vect.begin();
+    it = header.raw_vect.cbegin();
     return header.stdSize();
 }
 
@@ -230,31 +198,6 @@ size_t responder::getHeaderRequestComplete(std::vector<uint8_t>::const_iterator 
     memset(header.type.end.reserved, 0, (size_t)sizeof(header.type.end.reserved));
     header.syncToRaw();
 
-    it = header.raw_vect.begin();
+    it = header.raw_vect.cbegin();
     return header.endSize();
 }
-
-const std::string &responder::getParamValue(const std::string &name, const std::string &def_value) const
-{
-    std::map<std::string, std::string>::const_iterator it;
-
-    it = params_map.find(name);
-    if(it != params_map.end()) {
-        return it->second;
-    }
-
-    return def_value;
-}
-
-const std::string &responder::getStreamValue(const std::string &name, const std::string &def_value) const
-{
-    std::map<std::string, std::string>::const_iterator it;
-
-    it = stream_map.find(name);
-    if(it != stream_map.end()) {
-        return it->second;
-    }
-
-    return def_value;
-}
-

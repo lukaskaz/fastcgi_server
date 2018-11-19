@@ -1,9 +1,11 @@
 #ifndef __SUPPORT_H__
 #define __SUPPORT_H__
 
+#include <list>
 #include <string>
 #include <vector>
 #include <sstream>
+#include <unordered_map>
 #include "constants.hpp"
 
 
@@ -56,7 +58,7 @@ public:
     enum type_t { TYPE_PARAM = 0, TYPE_STREAM };
     input_data() = delete;
     input_data(const std::vector<uint8_t> &src):
-        it(src.begin()), end(src.end()) {}
+        it(src.cbegin()), end(src.cend()) {}
 
     int8_t findNextElem(type_t);
     bool isNameMatch(const std::string&) const;
@@ -77,6 +79,36 @@ private:
     uint32_t get4ByteEncodedVar(void);
     int8_t findNextParamElem(void);
     int8_t findNextStreamElem(void);
+};
+
+struct customData
+{
+public:
+    customData() = delete;
+    customData(const input_data::type_t t, const std::vector<uint8_t> &d):
+                                                        type(t), data(d) {};
+
+    int8_t buildMap(void);
+    int8_t getNextListEntry(std::pair<std::string, std::string> &);
+    void addToList(const std::string &name, const std::string &value) {
+        list.push_back(std::make_pair(name, value));
+        it = list.cbegin();
+    }
+
+    const std::string &searchValue(const std::string &, const std::string &) const;
+
+private:
+    const input_data::type_t type;
+    const std::vector<uint8_t> &data;
+
+    std::unordered_map<std::string, std::string> map;
+    std::list<std::pair<std::string, std::string>> list;
+    std::list<std::pair<std::string, std::string>>::const_iterator it;
+
+    void clear(void) {
+        map.clear();
+        list.clear();
+    }
 };
 
 template <typename T>

@@ -11,16 +11,6 @@
 #define REQ_LOG_DEBUG       true
 
 class request: public Log {
-private:
-    const std::string class_name;
-
-    uint32_t request_id;
-    uint32_t role;
-    uint8_t type;
-    uint8_t flags;
-    FCGI_Header_t header;
-
-    void setRequestParams(void);
 public:
     request(): Log(REQ_LOG_SIMPLE, REQ_LOG_ERROR, REQ_LOG_INFO, REQ_LOG_DEBUG),
                 class_name(PREP_CLASS_NAME),
@@ -32,11 +22,22 @@ public:
     void prepareHeader(void);
     std::vector<uint8_t> &getHeaderBuffer(void) { return header.raw_vect; }
 
+    bool keepConnection(void)  const;
     uint32_t getRole(void) const { return role; }
     uint8_t getType(void)  const { return type; }
-    bool keepConnection(void)  const;
     size_t getHeaderSize(void) const { return header.stdSize(); }
     size_t getInputSize(void)  const { return (size_t)header.input_len; }
+
+private:
+    const std::string class_name;
+
+    uint32_t request_id;
+    uint32_t role;
+    uint8_t type;
+    uint8_t flags;
+    FCGI_Header_t header;
+
+    void setRequestParams(void);
 };
 
 #endif

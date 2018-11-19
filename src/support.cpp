@@ -141,3 +141,46 @@ int8_t input_data::getValue(std::string &val) const
     return (-1);
 }
 
+int8_t customData::buildMap(void)
+{
+    if(data.size() > 0) {
+        input_data input(data);
+
+        clear();
+        while(input.findNextElem(type) == 0) {
+            map.insert(input.getPair());
+        }
+
+        return 0;
+    }
+
+    return (-1);
+}
+
+int8_t customData::getNextListEntry(std::pair<std::string, std::string> &param)
+{
+    if(list.empty() == false) {
+        if(it != list.cend()) {
+            param = *it++;
+            return 0;
+        }
+
+        it = list.cbegin();
+    }
+
+    return (-1);
+}
+
+const std::string &customData::searchValue(const std::string &name,
+                                           const std::string &def_value) const
+{
+    std::unordered_map<std::string, std::string>::const_iterator it;
+
+    it = map.find(name);
+    if(it != map.end()) {
+        return it->second;
+    }
+
+    return def_value;
+}
+
