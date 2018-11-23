@@ -29,7 +29,6 @@ int8_t responder::insertParams(std::vector<uint8_t> &input)
 {
     if(input.size() > 0) {
         params.insert(params.end(), input.begin(), input.end());
-        //buildParamsMap();
         return 0;
     }
     else {
@@ -43,7 +42,6 @@ int8_t responder::insertStream(std::vector<uint8_t> &input)
 {
     if(input.size() > 0) {
         stream.insert(stream.end(), input.begin(), input.end());
-        //buildStreamMap();
         return 0;
     }
     else {

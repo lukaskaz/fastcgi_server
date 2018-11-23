@@ -27,11 +27,11 @@ public:
             "   <form id=\"interface\" method=\"POST\">\n"
         );
 
-        while(custom_params.getNextListEntry(param) == 0) {
+        while(custom_params.listGetEntry(param) == 0) {
             writeBody("       <p>"+param.first+param.second+"</p>\n");
         }
 
-        while(custom_stream.getNextListEntry(param) == 0) {
+        while(custom_stream.listGetEntry(param) == 0) {
             writeBody("       <p>"+param.first+param.second+"</p>\n");
         }
 
@@ -78,23 +78,29 @@ private:
     ipcDataStream<ipcData> &ipc_data_stream;
 
     void collectData(void) {
+        custom_stream.mapBuild();
+
         ipc_data.request_nb = ++request_nb;
-        custom_stream.buildMap();
-        custom_stream.addToList("Name: ", custom_stream.searchValue("name", "N/A"));
-        custom_stream.addToList("Nick: ", custom_stream.searchValue("nick", "N/A"));
-        custom_stream.addToList("Requests: ", std::to_string(request_nb));
+        ipc_data.nick = custom_stream.mapGetValue("nick", "N/A");
+        ipc_data.name = custom_stream.mapGetValue("name", "N/A");
+
+        custom_stream.listAddEntry("Name: ", ipc_data.name);
+        custom_stream.listAddEntry("Nick: ", ipc_data.nick);
+        custom_stream.listAddEntry("Requests: ", std::to_string(request_nb));
+        custom_stream.listReset();
     }
 
     void collectParams(void) {
-        custom_params.buildMap();
-        custom_params.addToList("Server name: ", custom_params.searchValue("SERVER_NAME", "N/A"));
-        custom_params.addToList("Server admin: ", custom_params.searchValue("SERVER_ADMIN", "N/A"));
-        custom_params.addToList("Server address: ", custom_params.searchValue("SERVER_ADDR", "N/A"));
-        custom_params.addToList("Server port: ", custom_params.searchValue("SERVER_PORT", "N/A"));
-        custom_params.addToList("Client address: ", custom_params.searchValue("REMOTE_ADDR", "N/A"));
-        custom_params.addToList("Server software: ", custom_params.searchValue("SERVER_SOFTWARE", "N/A"));
-        custom_params.addToList("Server script: ", custom_params.searchValue("SCRIPT_NAME", "N/A"));
-        custom_params.addToList("Request type: ", custom_params.searchValue("REQUEST_METHOD", "N/A"));
+        custom_params.mapBuild();
+        custom_params.listAddEntry("Server name: ",  custom_params.mapGetValue("SERVER_NAME", "N/A"));
+        custom_params.listAddEntry("Server admin: ", custom_params.mapGetValue("SERVER_ADMIN", "N/A"));
+        custom_params.listAddEntry("Server address: ", custom_params.mapGetValue("SERVER_ADDR", "N/A"));
+        custom_params.listAddEntry("Server port: ", custom_params.mapGetValue("SERVER_PORT", "N/A"));
+        custom_params.listAddEntry("Client address: ", custom_params.mapGetValue("REMOTE_ADDR", "N/A"));
+        custom_params.listAddEntry("Server software: ", custom_params.mapGetValue("SERVER_SOFTWARE", "N/A"));
+        custom_params.listAddEntry("Server script: ", custom_params.mapGetValue("SCRIPT_NAME", "N/A"));
+        custom_params.listAddEntry( "Request type: ", custom_params.mapGetValue("REQUEST_METHOD", "N/A"));
+        custom_params.listReset();
     }
 
     void storeData(void) {

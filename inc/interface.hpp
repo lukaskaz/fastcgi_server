@@ -6,7 +6,11 @@
 
 
 struct ipcData {
+    ipcData(): request_nb(0) {}
+
     int32_t request_nb;
+    std::string nick;
+    std::string name;
 };
 
 template <typename T>

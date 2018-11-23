@@ -38,6 +38,9 @@ int main(int argc, char* argv[])
         }
         trace.log("Waiting for http requests, already received " +
             std::to_string(data.request_nb) + " requests");
+        if(data.name.size() > 0 && data.nick.size() > 0) {
+            trace.log("Last user name: " + data.name + " (nick: " + data.nick + ")");
+        }
         sleep(1);
     }
 

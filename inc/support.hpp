@@ -86,24 +86,24 @@ struct customData
 public:
     customData() = delete;
     customData(const input_data::type_t t, const std::vector<uint8_t> &d):
-                                                        type(t), data(d) {};
+                                                         type(t), data(d) {};
 
-    int8_t buildMap(void);
-    int8_t getNextListEntry(std::pair<std::string, std::string> &);
-    void addToList(const std::string &name, const std::string &value) {
-        list.push_back(std::make_pair(name, value));
-        it = list.cbegin();
+    void listReset(void) { it = list.cbegin(); }
+    void listAddEntry(const std::string &name, const std::string &value) {
+        list.push_back(make_pair(name, value));
     }
+    int8_t listGetEntry(std::pair<std::string, std::string> &);
 
-    const std::string &searchValue(const std::string &, const std::string &) const;
+    int8_t mapBuild(void);
+    const std::string &mapGetValue(const std::string &, const std::string &) const;
 
 private:
     const input_data::type_t type;
     const std::vector<uint8_t> &data;
 
+    std::list<std::pair<std::string, std::string>>::const_iterator it;
     std::unordered_map<std::string, std::string> map;
     std::list<std::pair<std::string, std::string>> list;
-    std::list<std::pair<std::string, std::string>>::const_iterator it;
 
     void clear(void) {
         map.clear();
